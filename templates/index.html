@@ -206,6 +206,31 @@
             font-weight: bold;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
         }
+
+        /* Add loading animation styles */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            left: 50%;
+            margin-left: 8px;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
     </style>
 </head>
 <body>
@@ -213,27 +238,19 @@
     <div class="particle-background"></div>
 
     <div class="container">
-        <form action="/generate" method="POST">
+        <form id="generateForm" onsubmit="return false;">
             <input type="text" name="prompt" placeholder="Enter a text prompt" required>
-            <button type="submit">Generate</button>
+            <button type="submit" id="generateBtn">Generate</button>
         </form>
 
-        <!-- Display error message -->
-        {% if error %}
-        <div class="error-box">
-            {{ error|safe }}
-        </div>
-        {% endif %}
-
-        {% if prompt %}
-        <div class="image-box">
-            <img src="{{ url_for('download_file', filename=image_path) }}" alt="Generated Image">
-            <div class="prompt">Prompt: {{ prompt }}</div>
-            <a href="{{ url_for('download_file', filename=image_path) }}" download>
+        <div id="errorBox" class="error-box" style="display: none;"></div>
+        <div id="imageContainer" class="image-box" style="display: none;">
+            <img id="generatedImage" src="" alt="Generated Image">
+            <div id="promptText" class="prompt"></div>
+            <a id="downloadLink" href="" download>
                 <button class="download-button">Download Image</button>
             </a>
         </div>
-        {% endif %}
     </div>
 
     <script>
@@ -252,6 +269,51 @@
             }
         }
         window.onload = createParticles;
+
+        document.getElementById('generateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = this;
+            const btn = document.getElementById('generateBtn');
+            const errorBox = document.getElementById('errorBox');
+            const imageContainer = document.getElementById('imageContainer');
+            const prompt = form.prompt.value;
+
+            // Show loading state
+            btn.classList.add('loading');
+            btn.disabled = true;
+            errorBox.style.display = 'none';
+            
+            try {
+                const formData = new FormData();
+                formData.append('prompt', prompt);
+                
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    errorBox.textContent = data.error;
+                    errorBox.style.display = 'block';
+                    imageContainer.style.display = 'none';
+                } else {
+                    // Update image and prompt
+                    document.getElementById('generatedImage').src = `/uploads/${data.image_path}`;
+                    document.getElementById('promptText').textContent = `Prompt: ${data.prompt}`;
+                    document.getElementById('downloadLink').href = `/uploads/${data.image_path}`;
+                    imageContainer.style.display = 'block';
+                }
+            } catch (error) {
+                errorBox.textContent = 'An error occurred while generating the image.';
+                errorBox.style.display = 'block';
+            } finally {
+                // Remove loading state
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
