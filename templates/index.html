@@ -250,7 +250,7 @@
 
     <div class="container">
         <form id="generateForm" onsubmit="return false;">
-            <input type="text" name="prompt" placeholder="Enter a text prompt" required>
+            <input type="text" name="prompt" placeholder="Enter a text prompt">
             <button type="submit" id="generateBtn">Generate</button>
         </form>
 
@@ -265,6 +265,9 @@
     </div>
 
     <script>
+        // Add variable to store last successful prompt
+        let lastSuccessfulPrompt = '';
+
         // Particle background generation
         function createParticles() {
             const particleContainer = document.querySelector('.particle-background');
@@ -285,13 +288,19 @@
             e.preventDefault();
             const form = this;
             const btn = document.getElementById('generateBtn');
+            const input = form.prompt;
             const errorBox = document.getElementById('errorBox');
             const imageContainer = document.getElementById('imageContainer');
-            const prompt = form.prompt.value;
-
-            // Store the original button text
-            const originalText = btn.textContent;
-
+            
+            // Use last successful prompt if input is empty
+            const prompt = input.value.trim() || lastSuccessfulPrompt;
+            
+            // Don't proceed if no prompt is available
+            if (!prompt) {
+                errorBox.textContent = 'The prompt cannot be empty.';
+                errorBox.style.display = 'block';
+                return;
+            }
             // Show loading state
             btn.classList.add('loading');
             btn.disabled = true;
@@ -313,9 +322,14 @@
                     errorBox.style.display = 'block';
                     imageContainer.style.display = 'none';
                 } else {
+                    // Store successful prompt and update placeholder
+                    lastSuccessfulPrompt = prompt;
+                    input.placeholder = prompt;
+                    input.value = ''; // Clear input field
+
                     // Update image and prompt
                     document.getElementById('generatedImage').src = `/uploads/${data.image_path}`;
-                    document.getElementById('promptText').textContent = `Prompt: ${data.prompt}`;
+                    document.getElementById('promptText').textContent = `Prompt: ${prompt}`;
                     document.getElementById('downloadLink').href = `/uploads/${data.image_path}`;
                     imageContainer.style.display = 'block';
                 }
@@ -326,7 +340,6 @@
                 // Restore button state
                 btn.classList.remove('loading');
                 btn.disabled = false;
-                btn.textContent = originalText;
             }
         });
     </script>
