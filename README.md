@@ -6,6 +6,10 @@
 
 The ComfyUI Simple Web API provides a super simple web interface for generating images using ComfyUI. This project is designed to be user-friendly, allowing individuals with no technical knowledge to create and download images effortlessly.
 
+<p align="center">
+  <img src="examples/Screenshot-example.jpg" width="100%" alt="ComfyUI Simple Web API Interface example screenshot">
+</p>
+
 ## Features
 
 - **User-Friendly Interface**: A clean and intuitive web interface that makes it easy for anyone to generate images.
