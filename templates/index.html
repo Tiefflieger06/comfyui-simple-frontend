@@ -71,7 +71,13 @@
             overflow: auto; /* Allows scrolling if content exceeds max-height */
         }
 
-
+        /* Add logout button styling */
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1;
+        }
 
         form {
             display: flex;
@@ -249,6 +255,9 @@
     <div class="particle-background"></div>
 
     <div class="container">
+        <a href="/logout" class="logout-button">
+            <button style="padding: 6px 12px; font-size: 14px;">Logout</button>
+        </a>
         <form id="generateForm" onsubmit="return false;">
             <input type="text" name="prompt" placeholder="Enter a text prompt">
             <button type="submit" id="generateBtn">Generate</button>
