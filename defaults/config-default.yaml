@@ -1,0 +1,8 @@
+server_address: "127.0.0.1:8188"
+image_prefix: "SDXL"    # Prefix for saved image filenames
+
+# Change these if you imported your own workflow
+workflow_path: "workflows/workflow-noserversave.json"
+text_prompt_node_id: "6"
+noise_seed_node_id: "13"
+output_node_id: "28"

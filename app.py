@@ -5,6 +5,44 @@ from threading import Lock
 import json
 import hashlib
 from functools import wraps
+import sys
+import shutil
+import getpass
+
+def initialize_config():
+    """Copy default config if it doesn't exist."""
+    if not os.path.exists('config.yaml'):
+        print("No config.yaml found. Creating from default...")
+        if not os.path.exists('defaults/config-default.yaml'):
+            print("Error: defaults/config-default.yaml not found!")
+            sys.exit(1)
+        shutil.copy('defaults/config-default.yaml', 'config.yaml')
+        print("Created config.yaml\nPlease configure it before running the application again.")
+        sys.exit(0)
+
+def initialize_users():
+    """Create users.json with admin account if it doesn't exist."""
+    if not os.path.exists('users.json'):
+        print("No users.json found. Creating new admin account...")
+        while True:
+            password = getpass.getpass("Enter admin password: ")
+            confirm = getpass.getpass("Confirm admin password: ")
+            if password == confirm:
+                break
+            print("Passwords don't match. Try again.")
+        
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        users = {'admin': hashed_password}
+        
+        with open('users.json', 'w') as f:
+            json.dump(users, f, indent=4)
+        print("Created users.json with admin account")
+        return True
+    return False
+
+# Add initialization before app creation
+initialize_config()
+initialize_users()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Generate a random secret key for sessions

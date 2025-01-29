@@ -1,6 +1,0 @@
-server_address: "127.0.0.1:8188"
-workflow_path: "workflows/workflow-noserversave.json"  # Relative subdirectory + filename for the workflow
-text_prompt_node_id: "6"                 # Node ID of the text prompt node
-image_prefix: "SDXL"                 # Prefix for saved image filenames
-noise_seed_node_id: "13"  # Node ID of the KSampler or similar node
-output_node_id: "28"
