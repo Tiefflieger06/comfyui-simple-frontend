@@ -184,5 +184,9 @@ def generate():
 def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
+
 if __name__ == '__main__':
     app.run(debug=False, port=1111, host="0.0.0.0")
