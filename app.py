@@ -188,5 +188,21 @@ def download_file(filename):
 def favicon():
     return send_from_directory('static', 'favicon.ico')
 
+@app.route('/admin/clear-cache', methods=['POST'])
+@login_required
+def clear_cache():
+    if session.get('username') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    try:
+        files = [os.path.join(app.config['UPLOAD_FOLDER'], f) 
+                for f in os.listdir(app.config['UPLOAD_FOLDER'])]
+        for f in files:
+            os.remove(f)
+            print(f"Deleted file: {f}")
+        return jsonify({'success': True, 'message': 'Cache cleared successfully'})
+    except Exception as e:
+        return jsonify({'error': f'Failed to clear cache: {str(e)}'}), 500
+
 if __name__ == '__main__':
     app.run(debug=False, port=1111, host="0.0.0.0")

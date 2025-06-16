@@ -6,6 +6,9 @@ This is a development roadmap. Contributors are welcome to implement any of thes
 - [ ] Add configurable accent colors
 - [ ] Implement auto light/dark mode theme switching
   - [ ] Add manual theme toggle in config
+- [ ] Enhance login page with signup information
+  - [ ] Add footer with contact information for account creation
+  - [ ] Alternative: Add signup button redirecting to registration portal
 
 ## Core Features
 - [ ] Implement generation queue system

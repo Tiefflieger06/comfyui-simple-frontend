@@ -147,6 +147,31 @@
             {% endif %}
             <button type="submit">Create</button>
         </form>
+        <button onclick="clearCache()" style="margin-top: 20px;">Delete Cache</button>
+        <div id="cacheMessage" style="margin-top: 10px;"></div>
+
+        <script>
+            async function clearCache() {
+                try {
+                    const response = await fetch('/admin/clear-cache', {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    const messageDiv = document.getElementById('cacheMessage');
+                    
+                    if (response.ok) {
+                        messageDiv.className = 'success-text';
+                        messageDiv.textContent = data.message;
+                    } else {
+                        messageDiv.className = 'error-text';
+                        messageDiv.textContent = data.error;
+                    }
+                } catch (error) {
+                    document.getElementById('cacheMessage').className = 'error-text';
+                    document.getElementById('cacheMessage').textContent = 'Failed to clear cache';
+                }
+            }
+        </script>
         {% if error %}
             <script>
                 window.onload = function() {
